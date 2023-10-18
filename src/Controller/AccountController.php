@@ -2,11 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\RegistrationType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthenticationException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthenticationException;
 
 class AccountController extends AbstractController
 {
@@ -48,5 +54,38 @@ class AccountController extends AbstractController
     #[Route("/logout", name: "account_logout")]
     public function logout(): void
     {
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param UserPasswordHasherInterface $hasher
+     * @return Response
+     */
+    #[Route("/register", name: "acount_register")]
+    public function register(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $hasher): Response
+    {
+        $user = new User();
+        $form = $this->createForm(RegistrationType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // gestion de l'inscription dans la bdd
+
+            // ici ça sert à crypter le mot de passe... ausinon il enregistre n'importe quel mot de passe
+            $hash = $hasher->hashPassword($user, $user->getPassword());
+            $user->setPassword($hash);
+
+            $manager->persist($user);
+            $manager->flush();
+
+            return $this->redirectToRoute('account_login');
+        }
+
+        return $this->render("account/registration.html.twig", [
+            'myForm' => $form->createView()
+        ]);
     }
 }
