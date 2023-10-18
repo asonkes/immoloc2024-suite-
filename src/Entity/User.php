@@ -103,6 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
+    // pemret de gérer les rôles... et sur le tableau de "getRoles", tu vas récupérer "ROLE_USER"
     public function getRoles(): array
     {
         $roles = $this->roles;
