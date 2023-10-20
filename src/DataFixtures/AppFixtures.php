@@ -33,7 +33,6 @@ class AppFixtures extends Fixture
         for ($u = 1; $u <= 10; $u++) {
             $user = new User();
             $genre = $faker->randomElement($genres);
-            $picture = 'https://picsum.photos/seed/picsum/500/500';
 
             $hash = $this->passwordHasher->hashPassword($user, 'password');
 
@@ -43,7 +42,7 @@ class AppFixtures extends Fixture
                 ->setIntroduction($faker->sentence())
                 ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(3)) . '</p>')
                 ->setPassword($hash)
-                ->setPicture($picture);
+                ->setPicture('');
 
             $manager->persist($user);
 
