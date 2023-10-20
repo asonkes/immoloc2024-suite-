@@ -2,18 +2,19 @@
 
 namespace App\Entity;
 
+use App\Entity\Image;
 use Cocur\Slugify\Slugify;
 use Doctrine\DBAL\Types\Types;
 use App\Repository\AdRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: AdRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity(fields:['title'], message:"Une autre annonce possède déjà ce titre, merci de le modifier")]
+#[UniqueEntity(fields: ['title'], message: "Une autre annonce possède déjà ce titre, merci de le modifier")]
 class Ad
 {
     #[ORM\Id]
@@ -22,7 +23,7 @@ class Ad
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Length(min: 10, max: 255, minMessage:"Le titre doit faire plus de 10 caractères", maxMessage: "Le titre ne doit pas faire plus de 255 caractères")]
+    #[Assert\Length(min: 10, max: 255, minMessage: "Le titre doit faire plus de 10 caractères", maxMessage: "Le titre ne doit pas faire plus de 255 caractères")]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
@@ -32,11 +33,11 @@ class Ad
     private ?float $price = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\Length(min: 20, max: 255, minMessage:"L'introduction doit faire plus de 20 caractères", maxMessage: "L'introduction ne doit pas faire plus de 255 caractères")]
+    #[Assert\Length(min: 20, max: 255, minMessage: "L'introduction doit faire plus de 20 caractères", maxMessage: "L'introduction ne doit pas faire plus de 255 caractères")]
     private ?string $introduction = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\Length(min: 100, minMessage:'Votre description doit faire plus de 100 caractères')]
+    #[Assert\Length(min: 100, minMessage: 'Votre description doit faire plus de 100 caractères')]
     private ?string $content = null;
 
     #[ORM\Column(length: 255)]
@@ -68,8 +69,7 @@ class Ad
     #[ORM\PreUpdate]
     public function initializeSlug(): void
     {
-        if(empty($this->slug))
-        {
+        if (empty($this->slug)) {
             $slugify = new Slugify();
             $this->slug = $slugify->slugify($this->title);
         }
